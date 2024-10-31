@@ -107,4 +107,49 @@ const deleteFromCart = async (req, res) => {
   }
 };
 
-module.exports = { addToCart, deleteFromCart, getCart };
+// Update quantity of a product in the Cart
+const updateCart = async (req, res) => {
+  const { productId, quantity } = req.body; // Get productId and the new quantity from the request body
+  const userId = req.user._id;
+
+  try {
+    // Find the user's cart
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    // Find the index of the product in the cart
+    const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
+    if (itemIndex === -1) {
+      return res.status(404).json({ message: 'Product not found in cart' });
+    }
+
+    // Get the product details to ensure valid pricing
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Calculate the difference in quantity and update the total amount
+    const oldQuantity = cart.items[itemIndex].quantity;
+    const quantityDifference = quantity - oldQuantity;
+    cart.totalAmount += quantityDifference * product.price;
+
+    // Ensure totalAmount does not go negative
+    if (cart.totalAmount < 0) cart.totalAmount = 0;
+
+    // Update the quantity of the item in the cart
+    cart.items[itemIndex].quantity = quantity;
+
+    await cart.save();
+    res.status(200).json({ message: 'Cart updated successfully', cart });
+  } catch (error) {
+    console.error('Error updating cart:', error);
+    res.status(500).json({ message: 'Error updating cart', error });
+  }
+};
+
+module.exports = { addToCart, deleteFromCart, getCart, updateCart };
+
+

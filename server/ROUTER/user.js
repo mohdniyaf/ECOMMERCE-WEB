@@ -4,7 +4,7 @@ const {Signup,Login,getUser,UpdateUser}=require('../CONTROLLER/UserController');
 const {addAddress, getAddress,updateAddress,deleteAddress}=require('../CONTROLLER/AddressController');
 const{allProduct,productSingleView,productLoad,getCategory}=require('../CONTROLLER/ProductController');
 const{productAddToWishlist,removeWishlistProduct,getWishlist}=require('../CONTROLLER/wishlistController');
-const {addToCart, deleteFromCart,getCart}=require('../CONTROLLER/CartController');
+const {addToCart, deleteFromCart,getCart,updateCart}=require('../CONTROLLER/CartController');
 const {protect}=require('../MIDDLEWARE/AuthMiddleware');
 
 
@@ -29,6 +29,7 @@ router.route('/deleteAddress/:id').delete(protect,deleteAddress); //------------
 
 router.route('/cart').get(protect,getCart); //-------------------------------------------------------===|  RENDERING CART
 router.route('/addCart').post(protect,addToCart); //-------------------------------------------------------===| ADDING PRODUCT TO CART
+router.route('/updateCart').put(protect,updateCart); //-------------------------------------------------------===| UPDATE PRODUCT TO CART
 router.route('/deleteCart/:id').delete(protect,deleteFromCart);//-------------------------------------------------------===|DELETE PRODUCT FROM CART
 
 
