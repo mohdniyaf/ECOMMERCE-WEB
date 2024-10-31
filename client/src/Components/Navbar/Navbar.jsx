@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import './Navbar.css'
 import {useNavigate} from 'react-router-dom'
+import { useAuth } from '../../context/store'
 function Navbar() {
   const navigate=useNavigate()
-  const [search,setSearch]=useState(false)
+  const [search,setSearch]=useState(false);
+  const { isLoggedIn, LogoutUser } = useAuth();
   
   return (
     <div>
@@ -18,13 +20,13 @@ function Navbar() {
           <p class="nav-link active cursor-p san-font" aria-current="page"  onClick={()=>navigate('/')}>Home</p>
         </li>
         <li class="nav-item">
-          <p class="nav-link active cursor-p san-font" aria-current="page"  href="">Men</p>
+          <p class="nav-link active cursor-p san-font" aria-current="page"  onClick={()=>navigate('/men')}>Men</p>
         </li>
         <li class="nav-item">
-          <p class="nav-link active cursor-p san-font" aria-current="page"  href="">Women </p>
+          <p class="nav-link active cursor-p san-font" aria-current="page"  onClick={()=>navigate('/women')}>Women </p>
         </li>
         <li class="nav-item">
-          <p class="nav-link active cursor-p san-font" aria-current="page"  href="">Contact</p>
+          <p class="nav-link active cursor-p san-font" aria-current="page"  onClick={()=>navigate('/blog')}>Blog</p>
         </li>
         
       </ul>
@@ -34,7 +36,9 @@ function Navbar() {
         <p className="mb-0 navbar-hide cursor-p" onClick={()=>navigate('/wishlist')} ><i class="fa-solid fa-heart nav-icon"></i></p>
         <p className="mb-0 cursor-p " onClick={()=>setSearch(search!=true)}><i className="fa-solid fa-magnifying-glass nav-icon"></i></p>
         <p className="mb-0 cursor-p" onClick={()=>navigate('/cart')}><i class="fa-solid fa-cart-shopping nav-icon"></i></p>
+        {!isLoggedIn?(
         <p className="mb-0 navbar-hide " onClick={()=>navigate('/login')}><button type='button' className='btn nav-login-btn bg-primary text-light'>Login</button></p>
+        ):(
         <p className="mb-0  ">
         <ul class="navbar-nav ms-auto navbar-hide">
       <li class="nav-item dropdown">
@@ -51,13 +55,13 @@ function Navbar() {
         <ul class="dropdown-menu dropdown-menu-loged" aria-labelledby="navbarDropdownMenuLink">
           <li><a class="dropdown-item" href="#" onClick={()=>navigate('/profile')}><i class="fa-solid fa-user"></i>  My profile</a></li>
           <li><a class="dropdown-item" href="#" onClick={()=>navigate('/orders')}><i class="fa-solid fa-bag-shopping"></i> Orders</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-right-from-bracket"></i>  Logout</a></li>
+          <li><a class="dropdown-item" href="#" onClick={LogoutUser}><i class="fa-solid fa-right-from-bracket"></i>  Logout</a></li>
         </ul>
       </li>
     </ul>
         </p>
 
-
+ )}
       </div>
   </div>
 </nav>
