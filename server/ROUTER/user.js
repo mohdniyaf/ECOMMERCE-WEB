@@ -2,7 +2,7 @@ const express=require('express');
 const router=express.Router();
 const {Signup,Login,getUser,UpdateUser}=require('../CONTROLLER/UserController');
 const {addAddress, getAddress,updateAddress,deleteAddress}=require('../CONTROLLER/AddressController');
-const{allProduct,productSingleView,productLoad,getCategory}=require('../CONTROLLER/ProductController');
+const{allProduct,productSingleView,productLoad,subCategoryLoad,getCategory}=require('../CONTROLLER/ProductController');
 const{productAddToWishlist,removeWishlistProduct,getWishlist}=require('../CONTROLLER/wishlistController');
 const {addToCart, deleteFromCart,getCart,updateCart}=require('../CONTROLLER/CartController');
 const {protect}=require('../MIDDLEWARE/AuthMiddleware');
@@ -16,6 +16,7 @@ router.route('/updateUser').put(protect,UpdateUser);  //------------------------
 router.route('/allProduct').get(allProduct); //-------------------------------------------------------===| ALL PRODUCTS
 router.route('/productSinglePage/:id').get(productSingleView); //------------------------------===| SINGLE PAGE WITH PRODUCT DETAILS
 router.route('/category/:categoryName').get(productLoad); //---------------------------------------------===| LOADING PRODUCT COLLECTION ACCORDING TO THE CATEGORY
+router.route('/products/:categoryName/:subCategoryName').get(subCategoryLoad); //---------------------------------------------===| LOADING PRODUCT ACCORDING TO THE subCATEGORY
 router.route('/allCategory').get(getCategory);//---------------------------------------------===| ALL CATEGORY
 
 router.route('/getwishlist').get(protect,getWishlist); //-------------------------------------------------------===| GET WISHLIST PRODUCT

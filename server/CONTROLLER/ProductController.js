@@ -47,6 +47,42 @@ const productLoad = async (req, res) => {
   }
 };
 
+// <-------------------------------------------------------| RENDERING PRODUCTS ACCORDING TO THE CATEGORIES AND SUBCATEGORY -----------------------------------|>
+const subCategoryLoad = async (req, res) => {
+  try {
+    const { categoryName, subCategoryName } = req.params; // Get category name and subcategory name from the URL
+
+    // Find the category by name
+    const Category = await category.findOne({ categoryName });
+
+    if (!Category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // Construct the query with category and optional subcategory
+    const query = {
+      category: Category._id, // Match category ID
+    };
+
+    if (subCategoryName) {
+      query.subCategory = subCategoryName; // Add subcategory to query if provided
+    }
+
+    // Fetch products based on category and optional subcategory
+    const products = await Product.find(query);
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products found in this category or subcategory" });
+    }
+
+    res.status(200).json(products); // Send back the products
+  } catch (error) {
+    console.log("Error loading products by category and subcategory:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 // <-------------------------------------------------------| RENDERING ALL PRODUCTS -----------------------------------------------------------|>
 
 
@@ -324,4 +360,4 @@ const deleteProduct = async (req, res) => {
 };
 
 
-module.exports={allProduct,productSingleView,productLoad,addCategory,addProduct,getCategory,updateCategory,deleteCategory,updateProduct,deleteProduct};
+module.exports={allProduct,productSingleView,productLoad,subCategoryLoad,addCategory,addProduct,getCategory,updateCategory,deleteCategory,updateProduct,deleteProduct};
