@@ -88,7 +88,7 @@ function ShoppingCart({ product }) {
                       <option value="xl">XL</option>
                       <option value="xxl">XXL</option>
                     </select>
-                    <p className='cart-content-font text-danger' onClick={() => handleRemoveItem(item._id)}>Remove</p>
+                    <p className='cart-content-font text-danger' onClick={() => handleRemoveItem(item.product._id)}>Remove</p>
                   </div>
                 </div>
                 <div className="cart-product-quantity">
