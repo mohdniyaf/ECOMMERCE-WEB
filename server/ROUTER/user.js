@@ -35,8 +35,8 @@ router.route('/updateCart').put(protect,updateCart); //-------------------------
 router.route('/deleteCart/:id').delete(protect,deleteFromCart);//-------------------------------------------------------===|DELETE PRODUCT FROM CART
 
 
-router.post('/order/create',protect,createOrder);
-router.post('/order/verify',protect,verifyOrder);
+router.route('/order/create').post(protect,createOrder);
+router.route('/order/verify').post(protect,verifyOrder);
 
 
 module.exports=router;
