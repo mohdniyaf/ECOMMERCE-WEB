@@ -10,15 +10,9 @@ const cors = require('cors');
 connectDB();
 
 const corsOption = {
-  origin: (origin, callback) => {
-    if (process.env.NODE_ENV === 'production') {
-      callback(null, process.env.CLIENT_URL_PROD);
-    } else if (process.env.NODE_ENV === 'development') {
-      callback(null, process.env.CLIENT_URL_DEV);
-    } else {
-      callback(null, '*'); // Allow all origins in other environments
-    }
-  }
+  origin:  "http://localhost:5173",
+  methods: "GET,POST,PUT,DELETE,PATCH,HEAD",
+  credentials: true,
 };
 
 app.use(express.json());
