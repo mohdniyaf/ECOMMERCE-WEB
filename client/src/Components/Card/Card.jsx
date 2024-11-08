@@ -12,6 +12,10 @@ function Card({ title }) {
 
   useEffect(() => {
     const fetchWishlist = async () => {
+      if (!token) {
+        navigate('/login'); // Redirect to login if not authenticated
+        return;
+      }
       try {
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/getwishlist`, {
           headers: {

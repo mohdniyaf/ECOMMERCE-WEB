@@ -4,14 +4,19 @@ import './ShoppingCart.css';
 import { useAuth } from '../../context/store';
 import { useNavigate } from 'react-router-dom';
 
-function ShoppingCart({ product }) {
+function ShoppingCart() {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token } = useAuth(); // Get the token from auth context
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     const fetchCartData = async () => {
+      if (!token) {
+        navigate('/login'); // Redirect to login if not authenticated
+        return;
+      }
+
       try {
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/cart`, {
           headers: {
@@ -26,7 +31,7 @@ function ShoppingCart({ product }) {
     };
 
     fetchCartData();
-  }, [token]);
+  }, [token, navigate]); // Include token and navigate as dependencies
 
   const handleQuantityChange = (itemId, change) => {
     setCartItems(prevItems =>
