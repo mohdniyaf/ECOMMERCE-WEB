@@ -4,6 +4,7 @@ import './CheckoutPayment.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/store';
 
+
 function CheckoutPayment() {
     const navigate = useNavigate();
     const { token } = useAuth();
@@ -40,21 +41,29 @@ function CheckoutPayment() {
     }, [token]);
 
     const handlePurchase = async () => {
+        console.log("Selected address:", selectedAddress);
+        console.log("Total Amount:", cartTotalAmount);
+        console.log("Payment Method:", paymentMethod);
+    
+        if (!selectedAddress) {
+            alert("Please select a shipping address.");
+            return;
+        }
+    
         if (paymentMethod === 'RazorPay') {
             try {
-                // Create Razorpay order in backend
                 const response = await axios.post(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/order/create`,
+                    `${import.meta.env.VITE_BACKEND_URL}/api/user/order/create`,
                     {
                         totalAmount: cartTotalAmount,
-                        address: selectedAddress,
-                        paymentMethod: 'RazorPay'
                     },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
+    
+                console.log("Order creation response:", response.data);
+    
                 const { id: order_id, amount, currency } = response.data;
-
-                // Initialize Razorpay payment
+    
                 const options = {
                     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
                     amount,
@@ -63,10 +72,11 @@ function CheckoutPayment() {
                     description: "Test Transaction",
                     order_id,
                     handler: async function (response) {
-                        // Payment success callback
+                        console.log("Razorpay response:", response);
                         const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
+    
                         await axios.post(
-                            `${import.meta.env.VITE_BACKEND_URL}/api/order/verify`,
+                            `${import.meta.env.VITE_BACKEND_URL}/api/user/order/verify`,
                             { order_id: razorpay_order_id, razorpay_payment_id, razorpay_signature },
                             { headers: { Authorization: `Bearer ${token}` } }
                         );
@@ -82,21 +92,25 @@ function CheckoutPayment() {
                         color: "#3399cc"
                     }
                 };
-
+    
                 const rzp = new window.Razorpay(options);
                 rzp.on("payment.failed", function (response) {
+                    console.error("Payment failed:", response);
                     alert("Payment failed. Please try again.");
                 });
                 rzp.open();
             } catch (error) {
                 console.error('Error processing Razorpay payment:', error);
+                alert('There was an error processing your payment. Please try again later.');
             }
         } else {
-            // Handle COD or other payment method
             alert("Order placed with Cash on Delivery.");
             navigate('/order/success');
         }
     };
+    
+    
+    
 
     return (
         <div className='checkout-border'>
