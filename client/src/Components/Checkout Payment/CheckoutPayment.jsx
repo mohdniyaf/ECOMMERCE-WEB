@@ -4,14 +4,15 @@ import './CheckoutPayment.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/store';
 
-
 function CheckoutPayment() {
     const navigate = useNavigate();
     const { token } = useAuth();
     const [addresses, setAddresses] = useState([]);
     const [cartTotalAmount, setCartTotalAmount] = useState(0);
     const [selectedAddress, setSelectedAddress] = useState(null);
-    const [paymentMethod, setPaymentMethod] = useState("COD"); // default payment method
+    const [paymentMethod, setPaymentMethod] = useState("COD");
+    const [cartItems, setCartItems] = useState([]);
+
 
     useEffect(() => {
         const fetchAddresses = async () => {
@@ -30,7 +31,10 @@ function CheckoutPayment() {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/cart`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
+                setCartItems(response.data.items);
                 setCartTotalAmount(response.data.totalAmount);
+                console.log(response.data.items);
+
             } catch (error) {
                 console.error('Error fetching cart data:', error);
             }
@@ -41,50 +45,48 @@ function CheckoutPayment() {
     }, [token]);
 
     const handlePurchase = async () => {
-        console.log("Selected address:", selectedAddress);
-        console.log("Total Amount:", cartTotalAmount);
-        console.log("Payment Method:", paymentMethod);
-    
         if (!selectedAddress) {
             alert("Please select a shipping address.");
             return;
         }
-    
+
         if (paymentMethod === 'RazorPay') {
             try {
                 const response = await axios.post(
                     `${import.meta.env.VITE_BACKEND_URL}/api/user/order/create`,
                     {
-                        totalAmount: cartTotalAmount,
+                        totalAmount: cartTotalAmount * 100, // Convert to smallest unit
+                        address: selectedAddress,
+                        paymentMethod: paymentMethod,
+                        items:cartItems, // Add the items from the cart
+                        userId: 'currentUserId' // Replace with actual user ID
                     },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-    
-                console.log("Order creation response:", response.data);
-    
-                const { id: order_id, amount, currency } = response.data;
-    
+
+                const { razorpayOrder, orderId } = response.data;
+
                 const options = {
                     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-                    amount,
-                    currency,
+                    amount: razorpayOrder.amount,
+                    currency: razorpayOrder.currency,
                     name: "Your Shop Name",
-                    description: "Test Transaction",
-                    order_id,
+                    description: "Order Payment",
+                    order_id: razorpayOrder.id,
                     handler: async function (response) {
-                        console.log("Razorpay response:", response);
                         const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
-    
+
                         await axios.post(
                             `${import.meta.env.VITE_BACKEND_URL}/api/user/order/verify`,
-                            { order_id: razorpay_order_id, razorpay_payment_id, razorpay_signature },
+                            { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId },
                             { headers: { Authorization: `Bearer ${token}` } }
                         );
+
                         alert("Payment Successful!");
-                        navigate('/order/success');
+                        navigate('/orders');
                     },
                     prefill: {
-                        name: "Your Name",
+                        name: "Customer Name",
                         email: "customer@example.com",
                         contact: "9999999999"
                     },
@@ -92,7 +94,7 @@ function CheckoutPayment() {
                         color: "#3399cc"
                     }
                 };
-    
+
                 const rzp = new window.Razorpay(options);
                 rzp.on("payment.failed", function (response) {
                     console.error("Payment failed:", response);
@@ -108,9 +110,6 @@ function CheckoutPayment() {
             navigate('/order/success');
         }
     };
-    
-    
-    
 
     return (
         <div className='checkout-border'>
