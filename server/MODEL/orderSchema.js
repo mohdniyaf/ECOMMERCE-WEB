@@ -8,58 +8,15 @@ const orderSchema = new Schema({
         type: String,
         required: true,
     },
-    items: [
-        {
-            name: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            category: {
-                type: mongoose.Schema.Types.ObjectId,  // Referencing Category model
-                ref: 'Category',  // Refer to the Category model
-                required: true
-            },
-            subCategory: {  // Shirt or Pant
-                type: String,
-                enum: ['Shirt', 'Pant'],
-                required: true
-            },
-            price: {
-                type: Number,
-                required: true
-            },
-            description: {
-                type: String,
-                required: true
-            },
-            size: {  // Sizes like Small, Medium, Large
-                type: [String],  // Array of sizes
-                enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],  // Valid sizes
-                required: true
-            },
-            images: [
-                {
-                  url: {
-                    type: String,
-                    required: true,  
-                      
-                  },
-                  altText: {
-                    type: String,
-                  },
-                  caption: {
-                    type: String,
-                  },
-                },
-              ],
-            stock: {
-                type: Number,
-                required: true,
-                default: 0
-            },
-    }
-    ],
+    items: [{
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+        name: { type: String, required: true },
+        category: { type: String, required: true },
+        subCategory: { type: String, required: true },
+        price: { type: Number, required: true },
+        description: { type: String, required: true },
+        quantity: { type: Number, required: true }
+    }],
     address:  {
             firstName: String,
             lastName: String,
