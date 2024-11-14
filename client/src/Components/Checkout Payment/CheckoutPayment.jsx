@@ -56,8 +56,6 @@ function CheckoutPayment() {
                     `${import.meta.env.VITE_BACKEND_URL}/api/user/order/create`,
                     {
                         totalAmount: cartTotalAmount,
-                        address: selectedAddress,
-                        paymentMethod: 'RazorPay'
                     },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
