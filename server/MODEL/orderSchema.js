@@ -9,7 +9,6 @@ const orderSchema = new Schema({
         required: true,
     },
     items: [{
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
         name: { type: String, required: true },
         category: { type: String, required: true },
         subCategory: { type: String, required: true },

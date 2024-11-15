@@ -9,7 +9,8 @@ const razorpay = new Razorpay({
 });
 
 const createOrder = async (req, res) => {
-  const { totalAmount, address, paymentMethod, items, userId } = req.body;
+  const { totalAmount, address, paymentMethod, items } = req.body;
+  const {userId}=req.user.id;
 
   try {
       // Create Razorpay order
