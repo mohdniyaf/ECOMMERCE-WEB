@@ -9,8 +9,7 @@ const razorpay = new Razorpay({
 });
 
 const createOrder = async (req, res) => {
-  const { totalAmount, address, paymentMethod, items } = req.body;
-  const {userId}=req.user.id;
+  const { totalAmount, address, paymentMethod, items ,userId} = req.body;
 
   try {
       // Create Razorpay order
@@ -88,4 +87,3 @@ module.exports = { createOrder, verifyOrder, updateOrderStatus };
 
 
 
-module.exports={createOrder,verifyOrder};
