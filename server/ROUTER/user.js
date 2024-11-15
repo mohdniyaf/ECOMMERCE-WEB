@@ -5,7 +5,7 @@ const {addAddress, getAddress,updateAddress,deleteAddress}=require('../CONTROLLE
 const{allProduct,productSingleView,productLoad,subCategoryLoad,getCategory}=require('../CONTROLLER/ProductController');
 const{productAddToWishlist,removeWishlistProduct,getWishlist}=require('../CONTROLLER/wishlistController');
 const {addToCart, deleteFromCart,getCart,updateCart}=require('../CONTROLLER/CartController');
-const {createOrder,verifyOrder}=require('../CONTROLLER/OrderController');
+const {createOrder,verifyOrder,getUserOrders}=require('../CONTROLLER/OrderController');
 const {protect}=require('../MIDDLEWARE/AuthMiddleware');
 
 
@@ -37,6 +37,7 @@ router.route('/deleteCart/:id').delete(protect,deleteFromCart);//---------------
 
 router.route('/order/create').post(protect,createOrder);
 router.route('/order/verify').post(protect,verifyOrder);
+router.route('/getUserOrders').get(protect,getUserOrders);//-----------------------------------===|GETTING USER ORDER
 
 
 module.exports=router;

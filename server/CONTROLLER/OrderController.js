@@ -83,7 +83,24 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, verifyOrder, updateOrderStatus };
+
+const getUserOrders = async (req, res) => {
+    try {
+        const userId = req.user.id; // Extract `userId` from the decoded token (protect middleware)
+        
+        const orders = await Order.find({ userId }); // Fetch orders where userId matches
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ message: 'No orders found for this user.' });
+        }
+        
+        res.status(200).json(orders);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+module.exports = { createOrder, verifyOrder, updateOrderStatus,getUserOrders };
 
 
 
