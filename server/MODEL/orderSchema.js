@@ -9,6 +9,7 @@ const orderSchema = new Schema({
         required: true,
     },
     items: [{
+        PrdId:{ type: String, required: true },
         name: { type: String, required: true },
         category: { type: String, required: true },
         subCategory: { type: String, required: true },
