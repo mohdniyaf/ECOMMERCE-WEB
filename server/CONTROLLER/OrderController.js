@@ -72,16 +72,7 @@ const verifyOrder = async (req, res) => {
   }
 };
 
-const updateOrderStatus = async (req, res) => {
-  const { orderId, status } = req.body;
 
-  try {
-      const order = await Order.findByIdAndUpdate(orderId, { orderStatus: status }, { new: true });
-      res.status(200).json({ message: 'Order status updated', order });
-  } catch (err) {
-      res.status(500).json({ error: err.message });
-  }
-};
 
 
 const getUserOrders = async (req, res) => {
@@ -139,7 +130,18 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-module.exports = { getAllOrders };
+
+const updateOrderStatus = async (req, res) => {
+    const { orderId, status } = req.body;
+  
+    try {
+        const order = await Order.findByIdAndUpdate(orderId, { orderStatus: status }, { new: true });
+        res.status(200).json({ message: 'Order status updated', order });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+  };
+
 
 
 
