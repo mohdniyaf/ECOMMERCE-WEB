@@ -132,15 +132,25 @@ const getAllOrders = async (req, res) => {
 
 
 const updateOrderStatus = async (req, res) => {
-    const { orderId, status } = req.body;
-  
+    const { orderId, status, deliveryAt } = req.body;  // Destructure deliveryAt as well
+
     try {
-        const order = await Order.findByIdAndUpdate(orderId, { deliveryStatus: status }, { new: true });
-        res.status(200).json({ message: 'Order status updated', order });
+        // Update order with new status and delivery date (if provided)
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            { 
+                orderStatus: status,           // Update the order status
+                deliveredAt: deliveryAt || null // Update the deliveryAt date if provided, else set it to null
+            },
+            { new: true } // Return the updated document
+        );
+
+        res.status(200).json({ message: 'Order status and delivery date updated', order: updatedOrder });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-  };
+};
+
 
 
 
