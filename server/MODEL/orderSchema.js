@@ -12,7 +12,21 @@ const orderSchema = new Schema({
         PrdId:{ type: String, required: true },
         name: { type: String, required: true },
         category: { type: String, required: true },
-        images:{ type: String, required: true },
+        images:[
+            {
+              url: {
+                type: String,
+                required: true,  
+                  
+              },
+              altText: {
+                type: String,
+              },
+              caption: {
+                type: String,
+              },
+            },
+          ],
         subCategory: { type: String, required: true },
         price: { type: Number, required: true },
         description: { type: String, required: true },
