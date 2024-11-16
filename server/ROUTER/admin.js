@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multerMiddleware=require('../MIDDLEWARE/multer');
 const { addCategory, addProduct,updateCategory ,deleteCategory,updateProduct,deleteProduct} = require('../CONTROLLER/ProductController');
+const {getAllOrders}=require('../CONTROLLER/OrderController');
 const { isAdmin, protect } = require('../MIDDLEWARE/AuthMiddleware');
 
 
@@ -12,5 +13,7 @@ router.route('/deleteCategory/:id').delete(deleteCategory);//---------------===|
 router.route('/addProduct').post(multerMiddleware, addProduct);//---------------===| ADDING PRODUCT
 router.route('/updateProduct/:id').put(updateProduct);//---------------===| UPDATE PRODUCT
 router.route('/deleteProduct/:id').delete( deleteProduct);//---------------===| DELETE PRODUCT
+
+router.route('/getAllOrders').get(protect,getAllOrders);//---------------===| GET ALL  ORDER 
 
 module.exports = router;
